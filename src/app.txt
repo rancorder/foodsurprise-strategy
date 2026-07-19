@@ -1,0 +1,105 @@
+
+(function(){
+  const TITLES=["山形の旬を、 御社の施策に変える。","山形から全国へ。 産地と直結する会社です","果物ではなく「季節・希少性・物語」を提供します","法人での活用は、大きく3つに分かれます","御社の業種をお選びください","ホテル・旅館","山形の旬が刺さる理由と、使いどころ","御社にお伺いしたいこと","ゴルフ場","山形の旬が刺さる理由と、使いどころ","御社にお伺いしたいこと","車ディーラー","山形の旬が刺さる理由と、使いどころ","御社にお伺いしたいこと","住宅・リフォーム","山形の旬が刺さる理由と、使いどころ","御社にお伺いしたいこと","士業・保険","山形の旬が刺さる理由と、使いどころ","御社にお伺いしたいこと","高級パティスリー","山形の旬が刺さる理由と、使いどころ","御社にお伺いしたいこと","旬の果物が、決まった時期に自動で届く","2つのコースと、通年の設計イメージ","果物以外も、山形産で組み合わせできます","一年を通して、途切れない“旬のリレー”","配送・数量・温度帯と、ご利用時の留意点","ご懸念は、できるだけ正直にお答えします","ご懸念は、できるだけ正直にお答えします","本日の整理と、御社で使えそうな用途","次回は、御社専用に最適化してお持ちします"];
+  const S=PAYLOAD.slides, BR=PAYLOAD.branch, QK=PAYLOAD.quick;
+  const isAud=location.hash.indexOf('audience')>=0;
+  const bc=('BroadcastChannel'in window)?new BroadcastChannel('foodsurprise'):null;
+  let cur=0;
+  const app=document.getElementById('app');
+
+  function makeStage(kind,html){
+    const wrap=document.createElement('div');wrap.className='stagewrap';
+    const st=document.createElement('div');st.className='stage'+((kind==='cover')?' dark':'');
+    st.innerHTML=html;wrap.appendChild(st);return wrap;
+  }
+  function fit(wrap,maxW,maxH){
+    const s=Math.min(maxW/1280,maxH/720);
+    const st=wrap.querySelector('.stage');
+    st.style.transform='scale('+s+')';
+    wrap.style.width=(1280*s)+'px';wrap.style.height=(720*s)+'px';
+  }
+
+  /* ---------------- AUDIENCE ---------------- */
+  function renderAud(){
+    app.innerHTML='';app.className='';
+    const root=document.createElement('div');root.className='aud';
+    const wrap=makeStage(S[cur].kind,S[cur].html);
+    root.appendChild(wrap);
+    const ctrl=document.createElement('div');ctrl.className='actrl';
+    ctrl.innerHTML='<button data-act="prev">‹ 前</button><span class="ind">'+(cur+1)+' / '+S.length+'</span><button data-act="next">次 ›</button><button data-act="menu">メニュー</button><button data-act="fs">⛶</button>';
+    root.appendChild(ctrl);
+    app.appendChild(root);
+    const resize=()=>fit(wrap,window.innerWidth,window.innerHeight);resize();
+    window.__resize=resize;
+    wrap.addEventListener('click',onGoto);
+    ctrl.addEventListener('click',e=>{const a=e.target.dataset.act;if(a==='next')go(cur+1);else if(a==='prev')go(cur-1);else if(a==='menu')go(4);else if(a==='fs')toggleFS();});
+  }
+  function onGoto(e){const b=e.target.closest('[data-goto]');if(b){go(parseInt(b.dataset.goto,10)-1);}}
+  function toggleFS(){if(!document.fullscreenElement)document.documentElement.requestFullscreen&&document.documentElement.requestFullscreen();else document.exitFullscreen&&document.exitFullscreen();}
+  function go(i,broadcast=true){i=Math.max(0,Math.min(S.length-1,i));cur=i;if(isAud)renderAud();else renderPres();if(broadcast&&bc)bc.postMessage({t:isAud?'pos':'go',i:cur});}
+
+  /* ---------------- PRESENTER ---------------- */
+  function renderPres(){
+    app.innerHTML='';app.className='';
+    const root=document.createElement('div');root.className='pres';
+    // top
+    const top=document.createElement('div');top.className='pres-top';
+    top.innerHTML='<span class="brand">フードサプライズ 商談ビュー<small>商談者用・お客様には共有しないでください</small></span>'
+      +'<span class="status"><span class="dot" id="dot"></span><span id="stxt">顧客画面：未接続</span></span>'
+      +'<button class="openbtn" id="openaud">🖥 顧客画面を別タブで開く</button>';
+    root.appendChild(top);
+    // list
+    const list=document.createElement('div');list.className='pres-list';
+    list.innerHTML=S.map((s,i)=>'<div class="pli'+(i===cur?' cur':'')+'" data-i="'+i+'"><span class="pli-n">'+(i+1)+'</span><span class="pli-t">'+TITLES[i]+'</span></div>').join('');
+    root.appendChild(list);
+    // mid
+    const mid=document.createElement('div');mid.className='pres-mid';
+    const pv=document.createElement('div');pv.className='preview';
+    const wrap=makeStage(S[cur].kind,S[cur].html);pv.appendChild(wrap);
+    const nav=document.createElement('div');nav.className='nav-mini';
+    nav.innerHTML='<button data-act="prev">‹ 前</button><button data-act="next">次 ›</button>';
+    const note=document.createElement('div');note.className='note';
+    note.innerHTML=(S[cur].note||'（このスライドのメモはありません）').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/\*\*(.+?)\*\*/g,'<b>$1</b>');
+    mid.appendChild(pv);mid.appendChild(nav);mid.appendChild(note);
+    root.appendChild(mid);
+    // right
+    const right=document.createElement('div');right.className='pres-right';
+    right.innerHTML='<div class="pr-h">クイックジャンプ</div><div class="quickrow">'
+      +QK.map(q=>'<button data-goto="'+q[1]+'">'+q[0]+'</button>').join('')+'</div>'
+      +'<div class="pr-h">分岐ルール早見表（相手の言葉 → 進む先）</div><div class="btab">'
+      +BR.map(b=>{const to=Array.isArray(b.to)?b.to:[b.to];return '<div class="brow" data-goto="'+to[0]+'"><div class="bk">「'+b.k+'」</div><div class="bv">'+b.view+'</div><div class="bto">→ Slide '+to.join(' / ')+'</div></div>';}).join('')
+      +'</div><div class="warn">※ この画面（台本・分岐・メモ）はお客様に見せないでください。Zoom等では「顧客画面」タブだけを共有します。</div>';
+    root.appendChild(right);
+    app.appendChild(root);
+    const resize=()=>fit(wrap,360,260);resize();window.__resize=resize;
+    if(audWin&&!audWin.closed)setConn(true);
+    // events
+    list.addEventListener('click',e=>{const r=e.target.closest('[data-i]');if(r)go(parseInt(r.dataset.i,10));});
+    nav.addEventListener('click',e=>{const a=e.target.dataset.act;if(a==='next')go(cur+1);else if(a==='prev')go(cur-1);});
+    right.addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b)go(parseInt(b.dataset.goto,10)-1);});
+    pv.addEventListener('click',e=>{const b=e.target.closest('[data-goto]');if(b)go(parseInt(b.dataset.goto,10)-1);});
+    document.getElementById('openaud').addEventListener('click',openAud);
+  }
+  let audWin=null;
+  function setConn(on){const d=document.getElementById('dot'),t=document.getElementById('stxt');if(d)d.className='dot'+(on?' on':'');if(t)t.textContent=on?'顧客画面：接続中':'顧客画面：未接続';}
+  function openAud(){const url=location.href.split('#')[0]+'#audience';audWin=window.open(url,'fsAudience');setTimeout(()=>{if(bc)bc.postMessage({t:'go',i:cur});},600);}
+
+  /* ---------------- sync ---------------- */
+  if(bc)bc.onmessage=(e)=>{const m=e.data||{};
+    if(isAud){ if(m.t==='go'){go(m.i,false);} }
+    else { if(m.t==='pos'){go(m.i,false);setConn(true);} if(m.t==='hi'){setConn(true);bc.postMessage({t:'go',i:cur});} }
+  };
+  // keyboard
+  window.addEventListener('keydown',e=>{
+    if(e.key==='ArrowRight'||e.key===' '){e.preventDefault();go(cur+1);}
+    else if(e.key==='ArrowLeft'){go(cur-1);}
+    else if(e.key==='Escape'){go(4);}
+    else if(e.key==='f'&&isAud){toggleFS();}
+  });
+  window.addEventListener('resize',()=>{if(window.__resize)window.__resize();});
+
+  // boot
+  window.__go=go;
+  if(isAud){renderAud();if(bc)bc.postMessage({t:'hi'});}
+  else{renderPres();}
+})();
