@@ -52,7 +52,7 @@ function company(n){
     </div>
     <div class="panel-navy">
       <div class="ph gold">本日の趣旨</div>
-      <p class="pp light">押し売りのお話ではありません。<br><b>毎月の旬の果物を、御施設のどなたに・どう楽しんでいただけそうか</b>を、一緒に整理させてください。</p>
+      <p class="pp light"><b>毎月の旬の果物を、御施設のどなたに・どう楽しんでいただけそうか</b>を、一緒に整理させてください。</p>
     </div>
   </div>${foot(n)}</div>`;
 }
