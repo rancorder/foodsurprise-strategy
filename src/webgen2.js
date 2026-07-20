@@ -10,22 +10,36 @@ const btn=(label,to,cls='')=>`<button class="navb ${cls}" data-goto="${to}">${es
 
 /* target palettes */
 const TG={
-  kaigo:{name:'介護施設', c:'#2F7A6B', t:'#E7F1EF',
+  kaigo:{name:'介護施設', c:'#2F7A6B', t:'#E7F1EF', d:'#1C4E45',
     icon:`<path d="M24 39C15 33 9 27 9 20c0-4 3-7 7-7 3 0 5 1.6 8 5 3-3.4 5-5 8-5 4 0 7 3 7 7 0 7-6 13-15 19z" fill="none" stroke="#fff" stroke-width="2.6" stroke-linejoin="round"/>`},
-  hoiku:{name:'保育園', c:'#E08A2B', t:'#FBF1E1',
+  hoiku:{name:'保育園', c:'#E08A2B', t:'#FBF1E1', d:'#9A5A12',
     icon:`<circle cx="24" cy="24" r="9" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M24 6v5M24 37v5M6 24h5M37 24h5M11 11l3.5 3.5M33.5 33.5L37 37M37 11l-3.5 3.5M14.5 33.5L11 37" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/>`}
 };
+/* seasonal fruit line-art (currentColor) */
+const F='fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round"';
+const FRUIT={
+  cherry:`<g ${F}><circle cx="15" cy="28" r="6.5"/><circle cx="27" cy="30" r="6.5"/><path d="M15 21.5C16 13 22 10 27 8M27 23.5C26 16 28 12 27 8"/><path d="M27 9c2.5-2.2 6-2 8 .6-2.6 2-6 1.8-8-.6z"/></g>`,
+  peach:`<g ${F}><path d="M20 11c-6 0-11 4-11 10.5S14 32 20 32s11-4.5 11-10.5S26 11 20 11z"/><path d="M20 13c-2 3-2 6.5 0 9.5"/><path d="M20 11c2-3 5-4.2 8.5-3.2C27.3 11 24 12 20 11z"/></g>`,
+  persimmon:`<g ${F}><path d="M20 15c-7 0-12 3.6-12 8.5S13 32 20 32s12-3.6 12-8.5S27 15 20 15z"/><path d="M13.5 15c2-2 4.2-3 6.5-3s4.5 1 6.5 3M20 11.5V15M15 13.6l-1.8-2.8M25 13.6l1.8-2.8"/></g>`,
+  pear:`<g ${F}><path d="M20 13c-2 0-3.2 1.8-3.2 3.8 0 3-5 4-5 10 0 5.2 4 8.2 8.2 8.2s8.2-3 8.2-8.2c0-6-5-7-5-10 0-2-1.2-3.8-3.2-3.8z"/><path d="M20 13c1-3 3.2-5 6.4-5-.8 3.2-3.2 5-6.4 5z"/></g>`,
+  apple:`<g ${F}><path d="M20 15c-2-2-5-2.2-7.2-1-3 1.8-4 6-2 11 1.4 3.8 3.8 6.6 5.8 6.6 1 0 1.8-.5 3.4-.5s2.4.5 3.4.5c2 0 4.4-2.8 5.8-6.6 2-5 1-9.2-2-11-2.2-1.2-5.2-1-7.2 1z"/><path d="M20 15c0-3 1.2-5 4-6"/></g>`
+};
+const SEAL=`<g fill="none" stroke="currentColor"><circle cx="40" cy="40" r="37" stroke-width="1.4"/><circle cx="40" cy="40" r="30" stroke-width="1"/><g stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M40 30c-4 0-7 3-7 7 0 5 7 10 7 10s7-5 7-10c0-4-3-7-7-7z"/><path d="M40 30c1.5-2.5 4-3.5 6.5-3-1 2.5-3.5 3.5-6.5 3z"/></g></g>`;
 
 /* ---------- templates ---------- */
 function cover(){
-  return `<div class="s-cover">
-    <div class="cov-l">
-      <div class="cov-eyebrow">介護施設・保育園むけ ｜ 果物のサブスク</div>
+  return `<div class="s-hero" style="background-image:url('data:image/jpeg;base64,${HERO}')">
+    <div class="hero-scrim"></div>
+    <div class="hero-body">
+      <div class="hero-top">
+        <span class="hero-seal"><svg viewBox="0 0 80 80">${SEAL}</svg></span>
+        <span class="cov-eyebrow">介護施設・保育園むけ ｜ 果物のサブスク</span>
+      </div>
       <h1 class="cov-ttl">山形の旬を、<br>毎月の楽しみに。</h1>
+      <div class="hero-rule"></div>
       <p class="cov-sub">季節に応じた果物を、毎月1回・13か月お届け。<br>働く方にも、暮らす方にも、季節の楽しみを施設全体へ。</p>
       <div class="cov-chips"><span>職員の福利厚生</span><span>入居者・園児へ</span><span>ご家族の贈り物</span><span>1名から</span></div>
     </div>
-    <div class="cov-r" style="background-image:url('data:image/jpeg;base64,${HERO}')"><div class="cov-r-fade"></div></div>
     <div class="cov-foot">株式会社フードサプライズ</div>
   </div>`;
 }
@@ -43,33 +57,42 @@ function company(n){
   </div>${foot(n)}</div>`;
 }
 function concept(n){
-  const m=[['6月','さくらんぼ','#C8432B'],['8月','桃・メロン','#3C7A4E'],['10月','柿','#B5852E'],['11月','ラ・フランス','#1C5E6B'],['12月','サンふじ','#9C3B5A']];
+  const m=[['6月','さくらんぼ','#C0392B','cherry'],['8月','桃・メロン','#E0904A','peach'],['10月','柿','#CE7A28','persimmon'],['11月','ラ・フランス','#5F8F63','pear'],['12月','サンふじ','#A6324B','apple']];
   return `<div class="pad">${head('SERVICE ｜ サービスの核','季節に応じた果物を、13か月お届け','#3C7A4E')}
   <p class="lead" style="margin-top:18px">毎月1回、その時期に一番おいしい山形の旬が届きます。<b>「今月は何かな」</b>という、毎月の小さな楽しみが続きます。</p>
-  <div class="tl" style="margin-top:52px">
-    <div class="tl-line"></div>
-    ${m.map(([mo,f,c])=>`<div class="tl-node"><div class="tl-dot" style="background:${c}"></div><div class="tl-mo">${mo}</div><div class="tl-f">${f}</div></div>`).join('')}
+  <div class="tl2" style="margin-top:44px">
+    <div class="tl2-line"></div>
+    ${m.map(([mo,f,c,fr])=>`<div class="tl2-node">
+      <div class="tl2-fruit" style="color:${c}"><svg viewBox="0 0 40 40">${FRUIT[fr]}</svg></div>
+      <div class="tl2-dot" style="background:${c}"></div>
+      <div class="tl2-mo">${mo}</div><div class="tl2-f">${f}</div></div>`).join('')}
   </div>
-  <p class="note-c" style="margin-top:48px">配送の月・回数・内容量は、御施設のご希望に合わせて調整できます。</p>${foot(n)}</div>`;
+  <p class="note-c" style="margin-top:44px">配送の月・回数・内容量は、御施設のご希望に合わせて調整できます。</p>${foot(n)}</div>`;
 }
 function hub(n){
-  const cards=[['kaigo',5],['hoiku',9]].map(([k,to])=>{const d=TG[k];return `<button class="hubcard hubcard2" data-goto="${to}" style="--ic:${d.c};--it:${d.t}">
-    <span class="hub-ic"><svg viewBox="0 0 48 48">${d.icon.replace(/#fff/g,d.c)}</svg></span>
-    <span class="hub-name">${d.name}</span>
-    <span class="hub-sub">${k==='kaigo'?'職員・入居者・ご家族へ':'保育士・園児・行事へ'}</span>
-    <span class="hub-go">この施設向けに見る →</span></button>`;}).join('');
+  const cards=[['kaigo',5],['hoiku',9]].map(([k,to],i)=>{const d=TG[k];return `<button class="hcard" data-goto="${to}" style="--ic:${d.c};--it:${d.t};--id:${d.d}">
+    <span class="hcard-ghost">${d.name}</span>
+    <span class="hcard-idx">0${i+1}</span>
+    <span class="hcard-ic"><svg viewBox="0 0 48 48">${d.icon.replace(/#fff/g,'currentColor')}</svg></span>
+    <span class="hcard-name">${d.name}</span>
+    <span class="hcard-sub">${k==='kaigo'?'職員・入居者・ご家族へ':'保育士・園児・行事へ'}</span>
+    <span class="hcard-go">この施設向けに見る →</span></button>`;}).join('');
   return `<div class="pad">${head('MENU ｜ 施設の種類をお選びください','どちらの施設向けにご覧になりますか','#C8432B')}
-  <div class="hubgrid hubgrid2" style="margin-top:30px">${cards}</div>
+  <div class="hcardwrap" style="margin-top:32px">${cards}</div>
   <div class="hub-foot-row">${btn('共通プラン・料金を見る',13,'ghost')}${btn('確認事項を見る',19,'ghost')}</div>${foot(n)}</div>`;
 }
 function overview(k,n,items){
   const d=TG[k];
-  return `<div class="band" style="background:${d.c}">
-    <div class="band-kick">${d.name}むけ ｜ 3つの届け先</div>
-    <div class="band-name">${d.name}で、こう活きます</div>
+  return `<div class="band band-xl" style="background:linear-gradient(122deg,${d.c},color-mix(in srgb,${d.c},#0e1f1b 52%))">
+    <span class="band-ghost">${d.name}</span>
+    <div class="band-idx">0${k==='kaigo'?1:2}</div>
+    <div class="band-txt">
+      <div class="band-kick">${d.name}むけ ｜ 3つの届け先</div>
+      <div class="band-name">${d.name}で、こう活きます</div>
+    </div>
     <span class="band-ic"><svg viewBox="0 0 48 48">${d.icon}</svg></span>
   </div>
-  <div class="pad pad-band">
+  <div class="pad pad-band-xl">
     <div class="grid3" style="--ic:${d.c};--it:${d.t}">
       ${items.map(([h,b],i)=>`<div class="ocard" style="--ic:${d.c};--it:${d.t}"><div class="on">${i+1}</div><div class="oh">${h}</div><div class="ob">${b}</div></div>`).join('')}
     </div>
@@ -80,7 +103,7 @@ function benef(k,n,kicker,title,statement,points){
   const d=TG[k];
   return `<div class="pad">${head(d.name+' ｜ '+kicker,title,d.c)}
   <div class="benef" style="--ic:${d.c};--it:${d.t}">
-    <div class="benef-state"><div class="bs-h">${statement}</div></div>
+    <div class="benef-state"><span class="benef-quote" style="color:${d.c}">“</span><div class="bs-h">${statement}</div></div>
     <div class="benef-points">
       ${points.map(p=>`<div class="bp"><span class="bpi">●</span><span>${p}</span></div>`).join('')}
     </div>
@@ -258,31 +281,80 @@ const QUICK=[['はじめに',1],['メニュー',4],['介護施設',5],['保育�
 /* ---------- extra CSS ---------- */
 const EXTRA=`
 .hubgrid2{grid-template-columns:1fr 1fr;gap:26px}
-.hubcard2{padding:34px 32px;gap:12px}
-.hubcard2 .hub-ic{width:58px;height:58px}
+.hubcard2{padding:38px 34px;gap:13px;border-left-width:6px}
+.hubcard2 .hub-ic{width:60px;height:60px}
 .hubcard2 .hub-ic svg{width:38px;height:38px}
-.hubcard2 .hub-name{font-size:28px}
-.hub-sub{font-size:15px;color:var(--inkSoft)}
-.ocard{background:#fff;border:1px solid var(--line);border-top:5px solid var(--ic);border-radius:14px;padding:30px 26px}
-.ocard .on{width:40px;height:40px;border-radius:50%;background:var(--it);color:var(--ic);font-family:'Noto Serif JP',serif;font-weight:700;font-size:19px;display:grid;place-items:center;margin-bottom:16px}
-.ocard .oh{font-family:'Noto Serif JP',serif;font-weight:700;font-size:21px;color:var(--navy);line-height:1.4}
-.ocard .ob{font-size:15px;color:var(--inkSoft);line-height:1.6;margin-top:12px}
+.hubcard2 .hub-name{font-size:29px}
+.hub-sub{font-size:14.5px;color:var(--inkSoft);letter-spacing:.02em}
+.ocard{background:#fff;border:1px solid var(--line);border-top:5px solid var(--ic);border-radius:var(--radius);padding:32px 28px;box-shadow:var(--sh-sm)}
+.ocard .on{width:44px;height:44px;border-radius:50%;background:var(--it);color:var(--ic);font-family:var(--serif);font-weight:700;font-size:20px;display:grid;place-items:center;margin-bottom:18px;box-shadow:inset 0 0 0 1px rgba(0,0,0,.04)}
+.ocard .oh{font-family:var(--serif);font-weight:700;font-size:21px;color:var(--navy);line-height:1.45;letter-spacing:.02em}
+.ocard .ob{font-size:15px;color:var(--inkSoft);line-height:1.65;margin-top:12px}
 .benef{display:grid;grid-template-columns:1.05fr 1fr;gap:30px}
-.benef-state{background:var(--it);border-left:6px solid var(--ic);border-radius:16px;padding:38px 34px;display:flex;align-items:center}
-.benef-state .bs-h{font-family:'Noto Serif JP',serif;font-weight:700;font-size:27px;color:var(--navy);line-height:1.6}
+.benef-state{background:var(--it);border-left:6px solid var(--ic);border-radius:20px;padding:40px 36px;display:flex;align-items:center;box-shadow:var(--sh-sm)}
+.benef-state .bs-h{font-family:var(--serif);font-weight:700;font-size:27px;color:var(--navy);line-height:1.7;letter-spacing:.02em}
 .benef-points{display:flex;flex-direction:column;gap:14px;justify-content:center}
-.bp{display:flex;gap:14px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:12px;padding:18px 22px;font-size:16.5px;color:var(--ink);line-height:1.55}
-.bp .bpi{color:var(--ic);font-size:13px;line-height:1.7;flex:none}
-.plcard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:32px 26px;text-align:center}
-.plcard .plh{font-family:'Noto Serif JP',serif;font-weight:700;font-size:22px;color:var(--green)}
-.plcard .plb{font-size:15px;color:var(--inkSoft);line-height:1.65;margin-top:14px}
-.cfitem{font-size:16.5px;color:var(--ink);line-height:1.5;padding:14px 0;border-bottom:1px solid var(--line);display:flex;gap:14px}
+.bp{display:flex;gap:15px;align-items:flex-start;background:#fff;border:1px solid var(--line);border-radius:14px;padding:19px 24px;font-size:16.5px;color:var(--ink);line-height:1.6;box-shadow:var(--sh-sm)}
+.bp .bpi{color:var(--ic);font-size:12px;line-height:1.8;flex:none}
+.plcard{background:#fff;border:1px solid var(--line);border-radius:var(--radius);padding:34px 26px;text-align:center;box-shadow:var(--sh-sm)}
+.plcard .plh{font-family:var(--serif);font-weight:700;font-size:22px;color:var(--green);letter-spacing:.02em}
+.plcard .plb{font-size:15px;color:var(--inkSoft);line-height:1.7;margin-top:14px}
+.cfitem{font-size:16.5px;color:var(--ink);line-height:1.55;padding:15px 0;border-bottom:1px solid var(--line);display:flex;gap:15px}
 .cfitem:last-child{border-bottom:0}
-.cfnum{color:var(--verm);font-weight:700;flex:none}
+.cfnum{color:var(--verm);font-weight:700;flex:none;font-family:var(--serif)}
 .clist{display:flex;flex-direction:column;gap:14px}
-.crow{display:flex;gap:18px;align-items:center;background:rgba(255,255,255,.06);border:1px solid #2a3a5c;border-radius:12px;padding:18px 24px}
-.ctag{font-family:'Noto Serif JP',serif;font-weight:700;font-size:18px;color:var(--gold2);flex:none;width:96px}
-.cbody{font-size:15.5px;color:#dbe1ee;line-height:1.5}
+.crow{display:flex;gap:20px;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:20px 26px}
+.ctag{font-family:var(--serif);font-weight:700;font-size:18px;color:var(--gold2);flex:none;width:96px;letter-spacing:.03em}
+.cbody{font-size:15.5px;color:#dbe1e4;line-height:1.55}
+/* ============ BOLD ART DIRECTION ============ */
+.ttl{font-size:48px;line-height:1.3}
+/* --- cover: full-bleed magazine --- */
+.s-hero{position:absolute;inset:0;background-size:cover;background-position:center;overflow:hidden}
+.s-hero:after{content:"";position:absolute;inset:0;background:radial-gradient(100% 130% at 10% 55%,transparent 40%,rgba(15,23,21,.30) 100%);pointer-events:none}
+.hero-scrim{position:absolute;inset:0;background:linear-gradient(101deg,rgba(16,25,23,.96) 0%,rgba(16,25,23,.88) 30%,rgba(16,25,23,.46) 58%,rgba(16,25,23,.08) 82%,transparent 100%)}
+.hero-body{position:absolute;left:92px;right:92px;top:0;bottom:0;display:flex;flex-direction:column;justify-content:center;z-index:2;color:#fff}
+.hero-top{display:flex;align-items:center;gap:19px;margin-bottom:28px}
+.hero-seal{width:66px;height:66px;color:var(--gold2);flex:none;opacity:.96}
+.hero-seal svg{width:100%;height:100%;display:block}
+.s-hero .cov-eyebrow{margin:0;color:var(--gold2)}
+.s-hero .cov-ttl{font-size:76px;line-height:1.26;margin-top:0;letter-spacing:.03em;text-shadow:0 2px 30px rgba(0,0,0,.4)}
+.s-hero .cov-ttl:after{display:none}
+.hero-rule{width:78px;height:3px;background:linear-gradient(90deg,var(--gold2),rgba(230,203,140,.08));border-radius:3px;margin:30px 0 0}
+.s-hero .cov-sub{color:#e6ebe8;margin-top:28px;max-width:600px}
+.s-hero .cov-chips{margin-top:36px}
+.s-hero .cov-foot{left:92px}
+/* --- section door --- */
+.band-xl{height:298px;padding:54px 74px}
+.band-xl .band-name{font-size:53px;margin-top:6px;letter-spacing:.04em}
+.band-ghost{position:absolute;right:26px;bottom:-46px;font-family:var(--serif);font-size:202px;font-weight:700;line-height:1;color:rgba(255,255,255,.08);white-space:nowrap;pointer-events:none;letter-spacing:.04em}
+.band-idx{position:relative;z-index:2;font-family:var(--serif);font-size:20px;font-weight:700;letter-spacing:.24em;color:var(--gold2)}
+.band-txt{position:absolute;left:74px;bottom:50px;z-index:2}
+.band-xl .band-ic{width:90px;height:90px;top:66px;transform:none}
+.band-xl .band-ic svg{width:52px;height:52px}
+.pad-band-xl{position:absolute;inset:0;padding:340px 74px 60px}
+/* --- hub big cards --- */
+.hcardwrap{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+.hcard{position:relative;overflow:hidden;background:#fff;border:1px solid var(--line);border-top:6px solid var(--ic);border-radius:22px;padding:42px 40px;text-align:left;min-height:316px;display:flex;flex-direction:column;box-shadow:var(--sh-sm);transition:transform .2s,box-shadow .2s}
+.hcard:hover{transform:translateY(-5px);box-shadow:var(--sh-lift)}
+.hcard-ghost{position:absolute;right:-6px;bottom:-38px;font-family:var(--serif);font-size:124px;font-weight:700;line-height:1;color:var(--it);pointer-events:none;white-space:nowrap;opacity:.85}
+.hcard-idx{position:relative;z-index:2;font-family:var(--serif);font-size:19px;font-weight:700;letter-spacing:.22em;color:var(--ic)}
+.hcard-ic{position:relative;z-index:2;width:66px;height:66px;color:var(--ic);margin:22px 0 22px}
+.hcard-ic svg{width:100%;height:100%;display:block}
+.hcard-name{position:relative;z-index:2;font-family:var(--serif);font-size:34px;font-weight:700;color:var(--navy);letter-spacing:.03em}
+.hcard-sub{position:relative;z-index:2;font-size:15px;color:var(--inkSoft);margin-top:9px}
+.hcard-go{position:relative;z-index:2;margin-top:auto;font-size:14px;font-weight:700;color:var(--ic);letter-spacing:.03em}
+/* --- fruit timeline --- */
+.tl2{position:relative;display:flex;justify-content:space-between;padding:0 18px}
+.tl2-line{position:absolute;top:85px;left:66px;right:66px;height:2px;background:linear-gradient(90deg,var(--line),#d9c9a6,var(--line))}
+.tl2-node{position:relative;width:18%;display:flex;flex-direction:column;align-items:center;text-align:center}
+.tl2-fruit{width:66px;height:66px;margin-bottom:12px}
+.tl2-fruit svg{width:100%;height:100%;display:block}
+.tl2-dot{width:15px;height:15px;border-radius:50%;position:relative;z-index:2;box-shadow:0 0 0 5px var(--paper),0 6px 14px -6px rgba(0,0,0,.3)}
+.tl2-mo{font-family:var(--serif);font-weight:700;font-size:24px;color:var(--navy);margin-top:18px;letter-spacing:.04em}
+.tl2-f{font-size:15px;color:var(--inkSoft);margin-top:7px;line-height:1.45}
+/* --- benef quote --- */
+.benef-state{position:relative;padding-top:46px}
+.benef-quote{position:absolute;left:28px;top:6px;font-family:var(--serif);font-size:78px;line-height:1;opacity:.28}
 `;
 
 // recompute presenter titles for THIS deck and inject into reused runtime
@@ -295,7 +367,7 @@ const HTML=`<!doctype html><html lang="ja"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>フードサプライズ｜介護施設・保育園むけ 商談スライド</title>
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@600;700;800&family=Noto+Serif+JP:wght@500;700&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
 <style>${BASECSS}${EXTRA}</style></head>
 <body><div id="app"></div>
 <script>const PAYLOAD=${PAYLOAD};</script>
